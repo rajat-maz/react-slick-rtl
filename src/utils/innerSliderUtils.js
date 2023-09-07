@@ -6,10 +6,10 @@ export function clamp(number, lowerBound, upperBound) {
 
 export const safePreventDefault = event => {
   const passiveEvents = ["onTouchStart", "onTouchMove", "onWheel"];
-  if(!passiveEvents.includes(event._reactName)) {
+  if (!passiveEvents.includes(event._reactName)) {
     event.preventDefault();
   }
-}
+};
 
 export const getOnDemandLazySlides = spec => {
   let onDemandSlides = [];
@@ -132,7 +132,8 @@ export const initializedState = spec => {
   let currentSlide =
     spec.currentSlide === undefined ? spec.initialSlide : spec.currentSlide;
   if (spec.rtl && spec.currentSlide === undefined) {
-    currentSlide = slideCount - 1 - spec.initialSlide;
+    // currentSlide = slideCount - 1 - spec.initialSlide;
+    currentSlide = spec.infinite ? slideCount - 1 - spec.initialSlide : 0;
   }
   let lazyLoadedList = spec.lazyLoadedList || [];
   let slidesToLoad = getOnDemandLazySlides({
@@ -386,9 +387,12 @@ export const swipeMove = (e, spec) => {
   let touchSwipeLength = touchObject.swipeLength;
   if (!infinite) {
     if (
-      (currentSlide === 0 && (swipeDirection === "right" || swipeDirection === "down")) ||
-      (currentSlide + 1 >= dotCount && (swipeDirection === "left" || swipeDirection === "up")) ||
-      (!canGoNext(spec) && (swipeDirection === "left" || swipeDirection === "up"))
+      (currentSlide === 0 &&
+        (swipeDirection === "right" || swipeDirection === "down")) ||
+      (currentSlide + 1 >= dotCount &&
+        (swipeDirection === "left" || swipeDirection === "up")) ||
+      (!canGoNext(spec) &&
+        (swipeDirection === "left" || swipeDirection === "up"))
     ) {
       touchSwipeLength = touchObject.swipeLength * edgeFriction;
       if (edgeDragged === false && onEdge) {
@@ -739,7 +743,8 @@ export const getTrackLeft = spec => {
   verticalOffset = slidesToOffset * slideHeight;
 
   if (!vertical) {
-    targetLeft = slideIndex * slideWidth * -1 + slideOffset;
+    const factor = spec.rtl ? 1 : -1;
+    targetLeft = slideIndex * slideWidth * factor + slideOffset;
   } else {
     targetLeft = slideIndex * slideHeight * -1 + verticalOffset;
   }
