@@ -48,7 +48,12 @@ export class InnerSlider extends React.Component {
   adaptHeight = () => {
     if (this.props.adaptiveHeight && this.list) {
       const elem = this.list.querySelector(
-        `[data-index="${this.state.currentSlide}"]`
+        // `[data-index="${this.state.currentSlide}"]`
+        `[data-index="${
+          this.props.rtl
+            ? this.state.slideCount - 1 - this.state.currentSlide
+            : this.state.currentSlide
+        }"]`
       );
       this.list.style.height = getHeight(elem) + "px";
     }
@@ -724,6 +729,9 @@ export class InnerSlider extends React.Component {
     }
 
     const listStyle = { ...verticalHeightStyle, ...centerPaddingStyle };
+    if (spec.rtl) {
+      listStyle.direction = "rtl";
+    }
     const touchMove = this.props.touchMove;
     let listProps = {
       className: "slick-list",
